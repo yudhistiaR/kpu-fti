@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,10 +8,10 @@ datasource db {
 }
 
 model User {
-    id String @id @default(uuid())
-    npm String @unique
-    name String
-    prodi String
-    password String
-    token String? @db.Text
+  id       String  @id @default(uuid())
+  npm      String  @unique
+  name     String
+  prodi    String
+  password String
+  token    String? @db.Text
 }
