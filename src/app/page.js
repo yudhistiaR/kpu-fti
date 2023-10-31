@@ -1,8 +1,10 @@
+import { Center, Text } from '@chakra-ui/react'
+
 const Home = () => {
   return (
-    <div>
-      <div>Login Done bang</div>
-    </div>
+    <Center minH="100vh">
+      <Text size="2xl">Home Page</Text>
+    </Center>
   )
 }
 
