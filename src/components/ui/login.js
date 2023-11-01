@@ -10,10 +10,8 @@ const Login = () => {
       </Text>
       <FormLogin />
       <Box mt="3" textAlign="center">
-        Belum memiliki akun?
-        <Link style={{ color: '#06990e' }} href="/auth/register">
-          Daftar
-        </Link>
+        Silahkan login menggunakan akun
+        <Link href="https://sia.uniska-bjm.ac.id/"> SIA UNISKA.</Link>
       </Box>
     </Box>
   )
