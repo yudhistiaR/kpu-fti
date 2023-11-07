@@ -4,8 +4,7 @@ import * as jose from 'jose'
 import { cookies } from 'next/headers'
 
 export async function POST(request) {
-  const storeCookies = cookies()
-
+  const setCookies = cookies()
   const req = await request.formData()
   const npm = req.get('username')
   const password = req.get('password')
@@ -40,14 +39,10 @@ export async function POST(request) {
     })
       .setProtectedHeader({ alg: 'HS256' })
       .setIssuedAt()
-      .setExpirationTime('30d')
+      .setExpirationTime('7d')
       .sign(secret)
 
-    storeCookies.set({
-      name: 'accessToken',
-      value: jwt,
-      httpOnly: true
-    })
+    setCookies.set('vertivication', true)
 
     return NextResponse.json({ user, token: jwt }, { status: 200 })
   } catch (err) {

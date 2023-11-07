@@ -14,6 +14,7 @@ import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
 import { useState } from 'react'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
+import Cookies from 'js-cookie'
 
 const FormLogin = () => {
   const [storeData, setStoreData] = useState({
@@ -42,20 +43,23 @@ const FormLogin = () => {
     fd.append('password', storeData.password)
 
     try {
-      await axios.post('/api/login', fd, {
-        headers: {
-          Accept:
-            'application/json, application/xml, text/plain, text/html, *.*',
-          'Content-Type': 'multipart/form-data'
-        }
-      })
+      await axios
+        .post('/api/login', fd, {
+          headers: {
+            Accept:
+              'application/json, application/xml, text/plain, text/html, *.*',
+            'Content-Type': 'multipart/form-data'
+          }
+        })
+        .then(data => {
+          Cookies.set('accessToken', data.data.token, { expires: 7 })
+        })
 
+      setLoading(false)
       path.push('/')
     } catch (err) {
       setLoading(false)
     }
-
-    setLoading(false)
   }
 
   return (
