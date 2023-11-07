@@ -6,21 +6,22 @@ import {
   CardBody,
   CardFooter,
   Heading,
-  Text
+  Text,
+  Button
 } from '@chakra-ui/react'
 import Profile from '../Profile'
 import ConfirmButton from '../ConfirmButton'
-import cookie from '@/lib/utils/cookie'
+import { deleteCookie } from 'cookies-next'
+import { useRouter } from 'next/navigation'
 
-const ConfirmProfile = async () => {
-  const getCookie = await cookie()
-
+const ConfirmProfile = () => {
+  const router = useRouter()
   return (
-    <Card boxShadow="xl">
+    <Card boxShadow="xl" backgroundColor={'white'}>
       <CardHeader>
         <Stack>
           <HStack align="center">
-            <Heading size="md">Konfirmasi Data diri</Heading>
+            <Heading size="lg">Konfirmasi Data diri</Heading>
           </HStack>
         </Stack>
       </CardHeader>
@@ -31,8 +32,18 @@ const ConfirmProfile = async () => {
         </Text>
         <Profile />
       </CardBody>
-      <CardFooter>
-        <ConfirmButton data={getCookie} />
+      <CardFooter gap={2}>
+        <ConfirmButton />
+        <Button
+          onClick={() => {
+            deleteCookie('vertivication')
+            deleteCookie('accessToken')
+            router.push('/')
+          }}
+          colorScheme="red"
+        >
+          Batal
+        </Button>
       </CardFooter>
     </Card>
   )

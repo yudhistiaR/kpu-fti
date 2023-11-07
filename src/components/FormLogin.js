@@ -8,19 +8,25 @@ import {
   Button,
   InputGroup,
   InputRightElement,
-  Spinner
+  Spinner,
+  useToast
 } from '@chakra-ui/react'
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
 import { useState } from 'react'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import Cookies from 'js-cookie'
+import { useUserAuth } from '@/store/useUserAuth'
 
 const FormLogin = () => {
   const [storeData, setStoreData] = useState({
     username: '',
     password: ''
   })
+
+  const toast = useToast()
+
+  const { set } = useUserAuth()
 
   const [loading, setLoading] = useState(false)
   const [showPassword, setShowPasswrod] = useState(false)
@@ -52,11 +58,27 @@ const FormLogin = () => {
           }
         })
         .then(data => {
+          toast({
+            status: 'success',
+            description: 'Login berhasil',
+            title: 'Berhasil',
+            position: 'top-right'
+          })
           Cookies.set('accessToken', data.data.token, { expires: 7 })
+          console.log(data)
+          set({
+            token: data.data.token,
+            user: {
+              userid: data.data.user.userid,
+              name: data.data.user.nama,
+              prodi: data.data.user.prodi
+            }
+          })
+          setLoading(false)
+          path.push('/konfirmasi')
         })
 
-      setLoading(false)
-      path.push('/')
+      
     } catch (err) {
       setLoading(false)
     }

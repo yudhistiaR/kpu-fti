@@ -1,16 +1,14 @@
-import * as jose from 'jose'
-import { cookies } from 'next/headers'
+import { getCookie } from 'cookies-next'
+import { jwtDecode } from 'jwt-decode'
 
-const cookie = async () => {
-  const getCookie = cookies()
+const cookie = () => {
+  const token = getCookie('accessToken')
 
-  const accessToken = getCookie.get('accessToken')?.value
+  if (!token) return null
 
-  const secret = new TextEncoder().encode(process.env.JWT_SECRET)
+  const decoded = jwtDecode(token)
 
-  const decoded = await jose.jwtVerify(accessToken, secret)
-
-  const { userid, name, prodi } = decoded.payload
+  const { userid, name, prodi } = decoded
 
   return { userid, name, prodi }
 }

@@ -1,17 +1,9 @@
+import cookie from '@/lib/utils/cookie'
 import { Text, Box } from '@chakra-ui/react'
-import { cookies } from 'next/headers'
-import * as jose from 'jose'
 
-const Profile = async () => {
-  const cookie = cookies()
-
-  const getAccess = cookie.get('accessToken')?.value
-
-  const secret = new TextEncoder().encode(process.env.JWT_SECRET)
-
-  const decoded = await jose.jwtVerify(getAccess, secret)
-
-  const { userid, name, prodi } = decoded.payload
+const Profile = () => {
+  
+  const {name, prodi, userid} = cookie()
 
   return (
     <Box mt="2">

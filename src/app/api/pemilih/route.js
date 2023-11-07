@@ -21,7 +21,7 @@ export const POST = async request => {
 
     return NextResponse.json(
       { message: 'Store data successfully' },
-      { status: 200 }
+      { status: 201 }
     )
   } catch (err) {
     return NextResponse.json({ message: err }, { status: 500 })

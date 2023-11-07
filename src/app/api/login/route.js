@@ -3,6 +3,10 @@ import axios from 'axios'
 import * as jose from 'jose'
 import { cookies } from 'next/headers'
 
+import { PrismaClient } from '@prisma/client'
+
+const prisma = new PrismaClient()
+
 export async function POST(request) {
   const setCookies = cookies()
   const req = await request.formData()
@@ -28,7 +32,7 @@ export async function POST(request) {
     const { userid, nama, kode_prodi } = user
 
     const prodi =
-      kode_prodi == '57201' ? 'Sistem Informasi' : 'Teknik Information'
+      kode_prodi == '57201' ? 'Sistem Informasi' : 'Teknik Informasi'
 
     const secret = new TextEncoder().encode(process.env.JWT_SECRET)
 
@@ -42,9 +46,28 @@ export async function POST(request) {
       .setExpirationTime('7d')
       .sign(secret)
 
-    setCookies.set('vertivication', true)
+    const verify = await prisma.pemilih.findFirst({
+      where: {
+        npm: userid
+      }
+    })
 
-    return NextResponse.json({ user, token: jwt }, { status: 200 })
+    if(verify){
+      setCookies.set('vertivication', false)
+    } else {
+      setCookies.set('vertivication', true)
+    }
+
+    return NextResponse.json(
+      {
+        user: {
+          ...user,
+          prodi: prodi
+        },
+        token: jwt
+      },
+      { status: 200 }
+    )
   } catch (err) {
     return NextResponse.json({ message: err }, { status: 500 })
   }

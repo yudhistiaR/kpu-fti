@@ -1,18 +1,19 @@
-import { Center, Stack, VStack } from '@chakra-ui/react'
-import Bilik from '@/components/Bilik'
-import ConfirmProfile from '@/components/ui/ComfirmProfile'
-import { cookies } from 'next/headers'
+'use client'
+
+import { Button, Center, Stack, VStack } from '@chakra-ui/react'
+import {useRouter} from 'next/navigation'
 
 const Home = () => {
-  const cookie = cookies()
-  const vertfy = cookie.get('vertivication')?.value
+
+  const router = useRouter()
 
   return (
     <Center minH="100vh">
       <Stack>
         <VStack>
-          {vertfy ? <ConfirmProfile /> : null}
-          <Bilik />
+          <Button onClick={() => router.push('/auth/login')}>
+            Login
+          </Button>
         </VStack>
       </Stack>
     </Center>
