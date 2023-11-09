@@ -1,27 +1,15 @@
 'use client'
 
 import { getCookie } from 'cookies-next'
-import { useEffect, useState } from 'react'
 import ConfirmProfile from './ui/ComfirmProfile'
+import Bilik from './Bilik'
 
 function ConfirmContainer() {
-  const verify = getCookie('vertivication')
+  const vertify = getCookie('vertivication')
 
-  const [isVerify, setIsVerify] = useState(false)
+  let show = vertify === 'false'
 
-  useEffect(() => {
-    if (verify) {
-      setIsVerify(true)
-    }
-  }, [verify])
-
-  
-  return (
-    <div>
-      {isVerify && <ConfirmProfile />}
-      {/* <Bilik /> */}
-    </div>
-  )
+  return <div>{show ? <ConfirmProfile /> : <Bilik />}</div>
 }
 
 export default ConfirmContainer

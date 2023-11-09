@@ -3,7 +3,14 @@ import Logo from './Logo'
 
 const Navbar = () => {
   return (
-    <Box bg="whiteAlpha.900" w="full" left="0" pos="fixed" boxShadow="2xl">
+    <Box
+      bg="whiteAlpha.900"
+      w="full"
+      left="0"
+      pos="fixed"
+      zIndex="1000"
+      boxShadow="2xl"
+    >
       <Box p="3">
         <Logo />
       </Box>

@@ -62,10 +62,12 @@ const FormLogin = () => {
             status: 'success',
             description: 'Login berhasil',
             title: 'Berhasil',
-            position: 'top-right'
+            position: 'top-right',
+            containerStyle: {
+              marginTop: '30px'
+            }
           })
           Cookies.set('accessToken', data.data.token, { expires: 7 })
-          console.log(data)
           set({
             token: data.data.token,
             user: {
@@ -74,11 +76,11 @@ const FormLogin = () => {
               prodi: data.data.user.prodi
             }
           })
+
           setLoading(false)
-          path.push('/konfirmasi')
         })
 
-      
+      path.push('/')
     } catch (err) {
       setLoading(false)
     }

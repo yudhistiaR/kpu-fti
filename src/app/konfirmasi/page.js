@@ -1,9 +1,7 @@
 import ConfirmContainer from '@/components/ConfirmContainer'
 import { Center, Stack, VStack } from '@chakra-ui/react'
 
-const Konfirmasi = () => {
-  // const data = cookie()
-
+const Konfirmasi = async () => {
   return (
     <Center minH="100vh">
       <Stack>

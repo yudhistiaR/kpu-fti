@@ -16,6 +16,7 @@ import { useRouter } from 'next/navigation'
 
 const ConfirmProfile = () => {
   const router = useRouter()
+
   return (
     <Card boxShadow="xl" backgroundColor={'white'}>
       <CardHeader>
@@ -38,7 +39,7 @@ const ConfirmProfile = () => {
           onClick={() => {
             deleteCookie('vertivication')
             deleteCookie('accessToken')
-            router.push('/')
+            router.push('/auth/login')
           }}
           colorScheme="red"
         >

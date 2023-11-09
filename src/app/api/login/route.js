@@ -32,7 +32,7 @@ export async function POST(request) {
     const { userid, nama, kode_prodi } = user
 
     const prodi =
-      kode_prodi == '57201' ? 'Sistem Informasi' : 'Teknik Informasi'
+      kode_prodi == '57201' ? 'Sistem Informasi' : 'Teknik Informatika'
 
     const secret = new TextEncoder().encode(process.env.JWT_SECRET)
 
@@ -52,10 +52,10 @@ export async function POST(request) {
       }
     })
 
-    if(verify){
-      setCookies.set('vertivication', false)
-    } else {
+    if (verify) {
       setCookies.set('vertivication', true)
+    } else {
+      setCookies.set('vertivication', false)
     }
 
     return NextResponse.json(

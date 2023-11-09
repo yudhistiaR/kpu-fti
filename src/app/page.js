@@ -1,19 +1,14 @@
 'use client'
 
-import { Button, Center, Stack, VStack } from '@chakra-ui/react'
-import {useRouter} from 'next/navigation'
+import { Center, Stack, VStack } from '@chakra-ui/react'
+import ConfirmContainer from '@/components/ConfirmContainer'
 
 const Home = () => {
-
-  const router = useRouter()
-
   return (
     <Center minH="100vh">
       <Stack>
         <VStack>
-          <Button onClick={() => router.push('/auth/login')}>
-            Login
-          </Button>
+          <ConfirmContainer />
         </VStack>
       </Stack>
     </Center>
