@@ -1,8 +1,11 @@
-import { NextRequest } from 'next/server'
+import { uploadImage } from '@/lib/utils/cloudinary'
 
 export const POST = async (request, response) => {
   const req = await request.formData()
 
-  const nama_paslon = req.get('nama_paslon')
-  const no_paslon = req.get('no_paslon')
+  const img = req.get('foto')
+
+  const d = await uploadImage(img)
+
+  console.log(d)
 }
