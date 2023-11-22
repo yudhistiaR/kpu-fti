@@ -16,6 +16,11 @@ enum Type {
   ti
 }
 
+enum Role {
+      Mahasiswa
+      Pengurus
+  }
+
 model User {
     id String @id @default(uuid())
     npm String @unique
@@ -30,24 +35,22 @@ model Pemilih {
   name String
   npm String
   prodi String
+  role Role @default(Mahasiswa)
   status_bem Boolean @default(false)
   status_hmp Boolean @default(false)
-  id_paslon_bem String?
-  id_paslon_hmp String?
 
-  Paslon Transaction[]
+  paslon Transaction[]
 }
 
 model Paslon {
     id String @id @default(uuid())
     nama_paslon String
     no_urut String
-    foto Bytes @db.Blob
-    visi String
-    misi String
+    foto String
+    visi_misi String @db.LongText
     type Type
 
-    Pemilih Transaction[]
+    pemilih Transaction[]
 }
 
 model Transaction {

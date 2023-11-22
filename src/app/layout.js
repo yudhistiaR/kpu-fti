@@ -6,8 +6,14 @@ import Navbar from '@/components/Navbar'
 const rubik = Rubik({ subsets: ['latin'] })
 
 export const metadata = {
-  title: 'KPU-FTI',
-  description: 'applikasi pemilu raya kpu fti'
+  title: {
+    default: 'KPU-FTI',
+    template: '%s | KPU-FTI'
+  },
+  description: 'Aplikasi pemilihan KPU-FTI UNISKA MAB',
+  icons: {
+    icon: './favicon.ico'
+  }
 }
 
 export default function RootLayout({ children }) {

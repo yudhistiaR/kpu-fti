@@ -1,6 +1,6 @@
 import { Card, Tab, Tabs, TabList, TabPanel, TabPanels } from '@chakra-ui/react'
 import StorePaslon from '@/components/ui/StorePaslon'
-import FormStorePaslon from '@/components/FormStorePaslon'
+import FormStorePaslon from '@/components/form/FormStorePaslon'
 
 const Dashboard = () => {
   return (

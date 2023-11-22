@@ -1,15 +1,11 @@
 import { Box, Stack, VStack } from '@chakra-ui/react'
 import CardPaslon from '@/components/ui/CardPaslon'
 
-const SiPage = () => {
+const PemilihanPage = () => {
   return (
     <Box h="100vh" pt="20" overflowY="scroll">
       <Stack>
         <VStack>
-          <CardPaslon />
-          <CardPaslon />
-          <CardPaslon />
-          <CardPaslon />
           <CardPaslon />
         </VStack>
       </Stack>
@@ -17,4 +13,4 @@ const SiPage = () => {
   )
 }
 
-export default SiPage
+export default PemilihanPage

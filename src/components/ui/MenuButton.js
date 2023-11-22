@@ -15,10 +15,27 @@ import Link from 'next/link'
 import cookie from '@/lib/utils/cookie'
 import { deleteCookie } from 'cookies-next'
 import { useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react'
+
+import { fetchPemilih } from '@/hooks/useFetch'
 
 const ButtonMenu = () => {
-  const data = cookie()
+  const [datas, setDatas] = useState()
+
   const route = useRouter()
+  const data = cookie()
+
+  //return NPM
+
+  useEffect(() => {
+    const getUser = async () => {
+      const res = await fetchPemilih(data?.userid)
+      setDatas(res?.data)
+    }
+
+    getUser()
+  }, [data?.userid])
+
   return (
     <Menu>
       <MenuButton
@@ -30,12 +47,14 @@ const ButtonMenu = () => {
       />
       <MenuList>
         <MenuItem icon={<MdDriveFileRenameOutline size="15" />}>
-          {data?.name}
+          {datas?.name}
         </MenuItem>
-        <MenuItem icon={<GoDotFill size="15" />}>{data?.prodi}</MenuItem>
-        <Link href="/dashboard">
-          <MenuItem icon={<BiSolidDashboard size="15" />}>Dashboard</MenuItem>
-        </Link>
+        <MenuItem icon={<GoDotFill size="15" />}>{datas?.prodi}</MenuItem>
+        {datas?.role === 'Pengurus' ? (
+          <Link href="/dashboard">
+            <MenuItem icon={<BiSolidDashboard size="15" />}>Dashboard</MenuItem>
+          </Link>
+        ) : null}
         <MenuItem
           icon={<IoMdLogOut size="15" />}
           onClick={() => {

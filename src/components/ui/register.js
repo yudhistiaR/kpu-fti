@@ -1,5 +1,5 @@
 import { Box, Text } from '@chakra-ui/react'
-import FormRegister from '../FormRegister'
+import FormRegister from '../form/FormRegister'
 import Link from 'next/link'
 
 const Register = () => {

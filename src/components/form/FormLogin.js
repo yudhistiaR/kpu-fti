@@ -16,37 +16,28 @@ import { useState } from 'react'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import Cookies from 'js-cookie'
-import { useUserAuth } from '@/store/useUserAuth'
+import { useForm } from 'react-hook-form'
 
 const FormLogin = () => {
-  const [storeData, setStoreData] = useState({
-    username: '',
-    password: ''
-  })
+  const {
+    register,
+    handleSubmit,
+
+    formState: { isSubmitting }
+  } = useForm()
 
   const toast = useToast()
 
-  const { set } = useUserAuth()
-
-  const [loading, setLoading] = useState(false)
   const [showPassword, setShowPasswrod] = useState(false)
-
-  const handleChange = prop => e => {
-    setStoreData({ ...storeData, [prop]: e.target.value })
-  }
 
   const handleShowPassword = () => setShowPasswrod(!showPassword)
 
   const path = useRouter()
 
-  const handleSubmit = async e => {
-    e.preventDefault()
-
-    setLoading(true)
-
+  const onSubmit = async data => {
     const fd = new FormData()
-    fd.append('username', storeData.username)
-    fd.append('password', storeData.password)
+    fd.append('username', data.username)
+    fd.append('password', data.password)
 
     try {
       await axios
@@ -61,44 +52,41 @@ const FormLogin = () => {
           toast({
             status: 'success',
             description: 'Login berhasil',
-            title: 'Berhasil',
+            title: 'Valid Login',
             position: 'top-right',
             containerStyle: {
               marginTop: '30px'
             }
           })
           Cookies.set('accessToken', data.data.token, { expires: 7 })
-          set({
-            token: data.data.token,
-            user: {
-              userid: data.data.user.userid,
-              name: data.data.user.nama,
-              prodi: data.data.user.prodi
-            }
-          })
-
-          setLoading(false)
         })
 
       path.push('/')
     } catch (err) {
-      setLoading(false)
+      toast({
+        status: 'error',
+        description: 'Periksa kembali NPM dan Password anda',
+        title: 'Invalid Login',
+        position: 'top-right',
+        containerStyle: {
+          marginTop: '30px'
+        }
+      })
     }
   }
 
   return (
-    <form method="post" onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <Grid columnGap="4" gap={6}>
         <GridItem>
           <FormControl>
             <Input
+              variant="flushed"
               borderColor="blackAlpha.900"
               placeholder="NPM"
-              variant="flushed"
               focusBorderColor="#06989e"
+              {...register('username')}
               type="text"
-              onChange={handleChange('username')}
-              required
             />
           </FormControl>
         </GridItem>
@@ -109,9 +97,8 @@ const FormLogin = () => {
               borderColor="blackAlpha.900"
               placeholder="Password"
               focusBorderColor="#06989e"
-              onChange={handleChange('password')}
+              {...register('password')}
               type={showPassword ? 'text' : 'password'}
-              required
             />
             <InputRightElement width="4.5rem">
               <Button h="1.78rem" size="md" onClick={handleShowPassword}>
@@ -120,13 +107,14 @@ const FormLogin = () => {
             </InputRightElement>
           </InputGroup>
         </GridItem>
+
         <Button
           type="submit"
           variant="solid"
           colorScheme="teal"
-          disabled={loading}
+          isLoading={isSubmitting}
         >
-          {loading ? (
+          {isSubmitting ? (
             <Spinner
               thickness="3px"
               emptyColor="gray"

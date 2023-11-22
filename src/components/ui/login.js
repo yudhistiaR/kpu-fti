@@ -1,5 +1,5 @@
 import { Box, Text } from '@chakra-ui/react'
-import FormLogin from '../FormLogin'
+import FormLogin from '../form/FormLogin'
 import Link from 'next/link'
 
 const Login = () => {

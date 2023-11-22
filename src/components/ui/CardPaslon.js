@@ -6,67 +6,66 @@ import {
   CardBody,
   CardFooter,
   Heading,
-  Button,
   Text,
-  Center,
-  Stack,
-  VStack,
   Box
 } from '@chakra-ui/react'
 import Image from 'next/image'
-import profile from '../../../public/profileCheck.jpg'
+import { useState, useEffect } from 'react'
+import { useParams } from 'next/navigation'
+import FroalaEditorView from 'react-froala-wysiwyg/FroalaEditorView'
+
+import { fetchPaslon } from '@/hooks/useFetch'
+import VotingAlert from '../alert/VotingAlert'
 
 const CardPaslon = () => {
+  const params = useParams()
+  const [datas, setData] = useState(null)
+
+  const getPaslon = async argn => {
+    try {
+      const res = await fetchPaslon(argn)
+      setData(res)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    getPaslon(params.type)
+  }, [params.type])
+
   return (
-    <Card w="full">
-      <CardHeader>
-        <Heading size="md">Paslon Nomor 1</Heading>
-      </CardHeader>
-      <CardBody>
-        <Center>
-          <Stack>
-            <VStack>
-              <Box>
-                <Image alt="profile" width={150} height={150} src={profile} />
-              </Box>
-              <Box>
-                <Heading size="sm" textAlign="center">
-                  Visi
-                </Heading>
-                <Text align="justify">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                </Text>
-              </Box>
-              <Box>
-                <Heading size="sm" textAlign="center">
-                  Misi
-                </Heading>
-                <Text align="justify">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                  laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-                  irure dolor in reprehenderit in voluptate velit esse cillum
-                  dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-                  cupidatat non proident, sunt in culpa qui officia deserunt
-                  mollit anim id est laborum.
-                </Text>
-              </Box>
-            </VStack>
-          </Stack>
-        </Center>
-      </CardBody>
-      <CardFooter gap={1}>
-        <Button colorScheme="blue" w="full">
-          Detail
-        </Button>
-        <Button colorScheme="teal" w="full">
-          Vote
-        </Button>
-      </CardFooter>
-    </Card>
+    <>
+      {datas?.map(data => (
+        <Card boxShadow="lg" w="full" key={data.id}>
+          <CardHeader>
+            <Heading size="md">Paslon Nomor {data.no_urut}</Heading>
+          </CardHeader>
+          <CardBody>
+            <Box align="center" w="full" mb={3}>
+              <Image
+                alt="profile"
+                width={500 * 2}
+                height={150 * 2}
+                src={data.foto}
+                style={{ borderRadius: 10 }}
+              />
+            </Box>
+            <Box my={3}>
+              <Text fontSize="lg" fontWeight="semibold">
+                Nama : <i>{data.nama_paslon}</i>
+              </Text>
+            </Box>
+            <Box px={4}>
+              <FroalaEditorView model={data.visi_misi} />
+            </Box>
+          </CardBody>
+          <CardFooter>
+            <VotingAlert paslonId={data.id} type={params.type} />
+          </CardFooter>
+        </Card>
+      ))}
+    </>
   )
 }
 
