@@ -1,3 +1,5 @@
+'use client'
+
 import { Box, Stack, VStack } from '@chakra-ui/react'
 import CardPaslon from '@/components/ui/CardPaslon'
 

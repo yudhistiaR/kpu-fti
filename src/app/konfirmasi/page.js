@@ -1,7 +1,9 @@
+'use client'
+
 import ConfirmContainer from '@/components/ConfirmContainer'
 import { Center, Stack, VStack } from '@chakra-ui/react'
 
-const Konfirmasi = async () => {
+const Konfirmasi = () => {
   return (
     <Center minH="100vh">
       <Stack>

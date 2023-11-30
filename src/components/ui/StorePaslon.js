@@ -25,28 +25,65 @@ import {
 } from '@chakra-ui/react'
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
-import FroalaEditorView from 'react-froala-wysiwyg/FroalaEditorView'
+import dynamic from 'next/dynamic'
+
+const FroalaEditorView = dynamic(() =>
+  import('react-froala-wysiwyg/FroalaEditorView')
+)
+
 import { TbFilterSearch } from 'react-icons/tb'
 import types from '@/lib/utils/types'
 
 import { fetchPaslon } from '@/hooks/useFetch'
+import { getCookie } from 'cookies-next'
 
 const StorePaslon = () => {
+  const token = getCookie('token')
   const [datas, setData] = useState(null)
-  const [type, setType] = useState('')
-
-  const getDatas = async type => {
-    try {
-      const res = await fetchPaslon(type)
-      setData(res)
-    } catch (error) {
-      console.log(error)
-    }
-  }
 
   useEffect(() => {
-    getDatas(type)
-  }, [type])
+    const getPaslon = async () => {
+      try {
+        const res = await fetchPaslon(token)
+        setData(res)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    getPaslon()
+  }, [token])
+
+  const handleFilter = async type => {
+    if (type === 'si') {
+      const data = await fetchPaslon(token)
+
+      const si = data.filter(el => el.type === 'si')
+
+      setData(si)
+    }
+
+    if (type === 'ti') {
+      const data = await fetchPaslon(token)
+
+      const ti = data.filter(el => el.type === 'ti')
+
+      setData(ti)
+    }
+
+    if (type === 'bem') {
+      const data = await fetchPaslon(token)
+
+      const bem = data.filter(el => el.type === 'bem')
+
+      setData(bem)
+    }
+
+    if (type === 'all') {
+      const data = await fetchPaslon(token)
+      setData(data)
+    }
+  }
 
   return (
     <Accordion w="full" allowMultiple>
@@ -66,10 +103,14 @@ const StorePaslon = () => {
           Kazumi
         </MenuButton>
         <MenuList>
-          <MenuItem onClick={() => setType('')}>All</MenuItem>
-          <MenuItem onClick={() => setType('si')}>Sistem Informasi</MenuItem>
-          <MenuItem onClick={() => setType('ti')}>Teknik Informatika</MenuItem>
-          <MenuItem onClick={() => setType('bem')}>BEM</MenuItem>
+          <MenuItem onClick={() => handleFilter('all')}>All</MenuItem>
+          <MenuItem onClick={() => handleFilter('si')}>
+            Sistem Informasi
+          </MenuItem>
+          <MenuItem onClick={() => handleFilter('ti')}>
+            Teknik Informatika
+          </MenuItem>
+          <MenuItem onClick={() => handleFilter('bem')}>BEM</MenuItem>
         </MenuList>
       </Menu>
 

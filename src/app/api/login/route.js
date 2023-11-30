@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server'
 import axios from 'axios'
-import * as jose from 'jose'
 import { cookies } from 'next/headers'
+
+import jwt from 'jsonwebtoken'
 
 import { PrismaClient } from '@prisma/client'
 
@@ -29,28 +30,28 @@ export async function POST(request) {
 
     const user = req.data.data
 
+    //userid return NPM
     const { userid, nama, kode_prodi } = user
 
     const prodi =
       kode_prodi == '57201' ? 'Sistem Informasi' : 'Teknik Informatika'
-
-    const secret = new TextEncoder().encode(process.env.JWT_SECRET)
-
-    const jwt = await new jose.SignJWT({
-      userid: userid,
-      name: nama,
-      prodi: prodi
-    })
-      .setProtectedHeader({ alg: 'HS256' })
-      .setIssuedAt()
-      .setExpirationTime('7d')
-      .sign(secret)
 
     const verify = await prisma.pemilih.findFirst({
       where: {
         npm: userid
       }
     })
+
+    const token = jwt.sign(
+      {
+        npm: userid,
+        name: nama,
+        prodi: prodi,
+        role: verify?.role === 'Pengurus' ? 'Pengurus' : 'Mahasiswa'
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: '7d' }
+    )
 
     if (verify) {
       setCookies.set('vertivication', true)
@@ -64,7 +65,7 @@ export async function POST(request) {
           ...user,
           prodi: prodi
         },
-        token: jwt
+        token: token
       },
       { status: 200 }
     )

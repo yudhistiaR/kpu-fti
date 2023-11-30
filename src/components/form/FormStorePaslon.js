@@ -28,6 +28,9 @@ import axios from 'axios'
 import { useForm } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
 import dynamic from 'next/dynamic'
+import { getCookie } from 'cookies-next'
+
+//editor
 import 'froala-editor/css/froala_style.min.css'
 import 'froala-editor/css/froala_editor.pkgd.min.css'
 import 'froala-editor/js/plugins/lists.min.js'
@@ -37,9 +40,10 @@ import 'froala-editor/js/plugins/char_counter.min.js'
 import 'froala-editor/js/plugins/align.min.js'
 import 'froala-editor/js/plugins/save.min.js'
 
-const FroalaEditor = dynamic(() => import('react-froala-wysiwyg'))
+const Editor = dynamic(() => import('react-froala-wysiwyg'))
 
 const FormStorePaslon = () => {
+  const token = getCookie('token')
   const [image, setImage] = useState('')
   const [visiMisi, setVisiMisi] = useState('')
 
@@ -78,7 +82,10 @@ const FormStorePaslon = () => {
 
       await axios
         .post('/api/paslon', formData, {
-          ContentType: 'multipart/form-data'
+          headers: {
+            Authorization: `Bearer ${token}`,
+            ContentType: 'multipart/form-data'
+          }
         })
         .then(
           toast({
@@ -201,7 +208,7 @@ const FormStorePaslon = () => {
                 </FormControl>
                 <FormControl>
                   <FormLabel>Visi dan Misi</FormLabel>
-                  <FroalaEditor
+                  <Editor
                     config={{
                       placeholderText: 'Tulis visi dan misi paslon',
                       charCounterCount: true,

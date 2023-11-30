@@ -1,3 +1,5 @@
+'use client'
+
 import { Container } from '@chakra-ui/react'
 
 const MainLayout = ({ children }) => {

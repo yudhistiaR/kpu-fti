@@ -1,20 +1,21 @@
 import { NextResponse } from 'next/server'
 import { PrismaClient } from '@prisma/client'
+import jwt from 'jsonwebtoken'
 
 const prisma = new PrismaClient()
 
 export const POST = async request => {
   const req = await request.formData()
 
-  const name = req.get('name')
   const npm = req.get('npm')
+  const name = req.get('name')
   const prodi = req.get('prodi')
 
   try {
     await prisma.pemilih.create({
       data: {
-        name: name,
         npm: npm,
+        name: name,
         prodi: prodi
       }
     })
@@ -28,22 +29,20 @@ export const POST = async request => {
   }
 }
 
-export const GET = async req => {
-  const { searchParams } = new URL(req.url)
-  const param = searchParams.get('npm')
+export const GET = async request => {
+  const auth = request.headers.get('authorization').split('Bearer ').at(1)
+
+  const decoded = jwt.verify(auth, process.env.JWT_SECRET)
+
+  const { npm } = decoded
 
   try {
-    if (param) {
-      const user = await prisma.pemilih.findFirst({
-        where: {
-          npm: param
-        }
-      })
-      return NextResponse.json({ data: user }, { status: 200 })
-    } else {
-      const allUser = await prisma.pemilih.findMany()
-      return NextResponse.json({ datas: allUser }, { status: 200 })
-    }
+    const user = await prisma.pemilih.findFirst({
+      where: {
+        npm: npm
+      }
+    })
+    return NextResponse.json(user, { status: 200 })
   } catch (err) {
     return NextResponse.json({ message: err }, { status: 500 })
   }

@@ -4,6 +4,11 @@ import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
 export async function POST(request) {
+  const auth = request.headers.get('authorization').split('Bearer ').at(1)
+
+  if (!auth)
+    return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
+
   const formData = await request.formData()
 
   try {
@@ -33,22 +38,15 @@ export async function POST(request) {
 }
 
 export async function GET(request) {
-  const { searchParams } = new URL(request.url)
-  const getType = searchParams.get('type')
+  const auth = await request.headers.get('authorization').split('Bearer ').at(1)
+
+  if (!auth)
+    return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
 
   try {
-    if (getType) {
-      const data = await prisma.paslon.findMany({
-        where: {
-          type: getType
-        }
-      })
-      return NextResponse.json(data, { status: 200 })
-    } else {
-      const data = await prisma.paslon.findMany()
-      return NextResponse.json(data, { status: 200 })
-    }
+    const data = await prisma.paslon.findMany()
+    return NextResponse.json(data, { status: 200 })
   } catch (error) {
-    return NextResponse.json({ message: error }, { status: 500 })
+    return NextResponse.json(error, { status: 500 })
   }
 }

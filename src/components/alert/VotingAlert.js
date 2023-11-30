@@ -12,35 +12,29 @@ import {
 } from '@chakra-ui/react'
 import { useDisclosure } from '@chakra-ui/react'
 import { useRef, useEffect, useState } from 'react'
-import cookie from '@/lib/utils/cookie'
-
+import { getCookie } from 'cookies-next'
 import { useRouter } from 'next/navigation'
 import { fetchPemilih } from '@/hooks/useFetch'
 
 function VotingAlert(props) {
+  const token = getCookie('token')
+
   const { paslonId, type } = props
 
-  const [statusVote, setStatusVote] = useState(false)
-
   const [loading, setLoading] = useState(false)
+  const [statusVote, setStatusVote] = useState(null)
   const { isOpen, onOpen, onClose } = useDisclosure()
   const cancelRef = useRef()
 
   const route = useRouter()
 
-  const data = cookie()
   const toast = useToast()
-
-  //return NPM
-  const { userid } = data
 
   useEffect(() => {
     const getUser = async () => {
-      const pemilih = await fetchPemilih(userid)
+      const pemilih = await fetchPemilih(token)
 
-      const {
-        data: { status_hmp, status_bem, role }
-      } = pemilih
+      const { status_hmp, status_bem, role } = pemilih
 
       if (type === 'bem') {
         if (status_bem) {
@@ -64,20 +58,21 @@ function VotingAlert(props) {
     }
 
     getUser()
-  }, [userid, type, route])
+  }, [route, token, type])
 
   const handleClick = async () => {
     setLoading(true)
 
     const fd = new FormData()
-
-    fd.append('npm', userid)
     fd.append('paslonId', paslonId)
     fd.append('type', type)
 
     try {
       await fetch('/api/vote', {
         method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
         ContentType: 'multipart/form-data',
         body: fd
       })

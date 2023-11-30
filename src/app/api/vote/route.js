@@ -1,14 +1,24 @@
 import { NextResponse } from 'next/server'
 import { PrismaClient } from '@prisma/client'
+import jwt from 'jsonwebtoken'
 
 const prisma = new PrismaClient()
 
 export const POST = async request => {
-  const formData = await request.formData()
+  const auth = request.headers.get('authorization').split('Bearer ').at(1)
 
-  const npm = formData.get('npm')
+  if (!auth)
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+  const decoded = jwt.verify(auth, process.env.JWT_SECRET)
+
+  const { npm } = decoded
+
+  const formData = await request.formData()
   const paslonId = formData.get('paslonId')
   const type = formData.get('type')
+
+  console.log(type)
 
   try {
     let status = {}

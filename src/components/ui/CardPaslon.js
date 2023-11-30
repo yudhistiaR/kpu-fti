@@ -11,28 +11,40 @@ import {
 } from '@chakra-ui/react'
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
-import { useParams } from 'next/navigation'
-import FroalaEditorView from 'react-froala-wysiwyg/FroalaEditorView'
+import dynamic from 'next/dynamic'
 
+const FroalaEditorView = dynamic(() =>
+  import('react-froala-wysiwyg/FroalaEditorView')
+)
+
+import { getCookie } from 'cookies-next'
 import { fetchPaslon } from '@/hooks/useFetch'
+import { useDecoded } from '@/hooks/useDecoded'
 import VotingAlert from '../alert/VotingAlert'
 
 const CardPaslon = () => {
-  const params = useParams()
+  const token = getCookie('token')
   const [datas, setData] = useState(null)
 
-  const getPaslon = async argn => {
-    try {
-      const res = await fetchPaslon(argn)
-      setData(res)
-    } catch (error) {
-      console.log(error)
-    }
-  }
+  const { prodi } = useDecoded(token)
 
   useEffect(() => {
-    getPaslon(params.type)
-  }, [params.type])
+    const getPaslon = async () => {
+      try {
+        if (prodi == 'Sistem Informasi') {
+          const res = await fetchPaslon(token, 'si')
+          setData(res)
+        } else if (prodi == 'Teknik Informatika') {
+          const res = await fetchPaslon(token, 'ti')
+          setData(res)
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    getPaslon()
+  }, [token, prodi])
 
   return (
     <>
@@ -61,7 +73,7 @@ const CardPaslon = () => {
             </Box>
           </CardBody>
           <CardFooter>
-            <VotingAlert paslonId={data.id} type={params.type} />
+            <VotingAlert paslonId={data.id} type={data.type} />
           </CardFooter>
         </Card>
       ))}

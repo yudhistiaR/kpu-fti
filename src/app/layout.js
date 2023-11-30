@@ -2,17 +2,18 @@ import { Rubik } from 'next/font/google'
 import { Providers } from '@/components/Providers'
 import MainLayout from '@/components/Layout'
 import Navbar from '@/components/Navbar'
+import config from '@/config/config'
 
 const rubik = Rubik({ subsets: ['latin'] })
 
 export const metadata = {
   title: {
-    default: 'KPU-FTI',
-    template: '%s | KPU-FTI'
+    default: config.name,
+    template: `%s | ${config.name}`
   },
-  description: 'Aplikasi pemilihan KPU-FTI UNISKA MAB',
+  description: config.description,
   icons: {
-    icon: './favicon.ico'
+    icon: 'favicon.ico'
   }
 }
 

@@ -8,15 +8,14 @@ import {
   Button,
   InputGroup,
   InputRightElement,
-  Spinner,
   useToast
 } from '@chakra-ui/react'
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
 import { useState } from 'react'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
-import Cookies from 'js-cookie'
 import { useForm } from 'react-hook-form'
+import { setCookie } from 'cookies-next'
 
 const FormLogin = () => {
   const {
@@ -43,8 +42,7 @@ const FormLogin = () => {
       await axios
         .post('/api/login', fd, {
           headers: {
-            Accept:
-              'application/json, application/xml, text/plain, text/html, *.*',
+            Accept: 'application/json',
             'Content-Type': 'multipart/form-data'
           }
         })
@@ -58,7 +56,7 @@ const FormLogin = () => {
               marginTop: '30px'
             }
           })
-          Cookies.set('accessToken', data.data.token, { expires: 7 })
+          setCookie('token', data.data.token)
         })
 
       path.push('/')
@@ -114,17 +112,7 @@ const FormLogin = () => {
           colorScheme="teal"
           isLoading={isSubmitting}
         >
-          {isSubmitting ? (
-            <Spinner
-              thickness="3px"
-              emptyColor="gray"
-              speed="0.90s"
-              color="with"
-              size="md"
-            />
-          ) : (
-            'Login'
-          )}
+          Login
         </Button>
       </Grid>
     </form>

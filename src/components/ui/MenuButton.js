@@ -12,29 +12,27 @@ import { IoMdLogOut } from 'react-icons/io'
 import { GoDotFill } from 'react-icons/go'
 import { MdDriveFileRenameOutline } from 'react-icons/md'
 import Link from 'next/link'
-import cookie from '@/lib/utils/cookie'
 import { deleteCookie } from 'cookies-next'
 import { useRouter } from 'next/navigation'
 import { useState, useEffect } from 'react'
-
+import { getCookie } from 'cookies-next'
 import { fetchPemilih } from '@/hooks/useFetch'
 
 const ButtonMenu = () => {
+  const token = getCookie('token')
+
   const [datas, setDatas] = useState()
 
   const route = useRouter()
-  const data = cookie()
-
-  //return NPM
 
   useEffect(() => {
     const getUser = async () => {
-      const res = await fetchPemilih(data?.userid)
-      setDatas(res?.data)
+      const res = await fetchPemilih(token)
+      setDatas(res)
     }
 
     getUser()
-  }, [data?.userid])
+  }, [])
 
   return (
     <Menu>
@@ -58,7 +56,7 @@ const ButtonMenu = () => {
         <MenuItem
           icon={<IoMdLogOut size="15" />}
           onClick={() => {
-            deleteCookie('accessToken')
+            deleteCookie('token')
             deleteCookie('vertivication')
             route.push('/auth/login')
           }}
