@@ -6,11 +6,18 @@ const Bilik = () => {
     <Center w="full">
       <Stack w="full">
         <VStack>
-          <Button w="full" boxShadow="xl" size="lg" colorScheme="purple">
-            <Link href="/bilik/bem">Bilik BEM FTI</Link>
-          </Button>
-          <Button w="full" boxShadow="xl" size="lg" colorScheme="blue">
-            <Link href="/bilik">Bilik HIMPUNAN FTI</Link>
+          <Link href="/bilik/bem">
+            <Button w="full" boxShadow="xl" size="lg" colorScheme="purple">
+              Bilik BEM FTI
+            </Button>
+          </Link>
+          <Link href="/bilik">
+            <Button w="full" boxShadow="xl" size="lg" colorScheme="blue">
+              Bilik HIMPUNAN FTI
+            </Button>
+          </Link>
+          <Button w="full" boxShadow="xl" size="lg" colorScheme="green">
+            <Link href="/stats">Hasil Poling Suara</Link>
           </Button>
         </VStack>
       </Stack>
