@@ -1,9 +1,16 @@
-import { Center, Text } from '@chakra-ui/react'
+'use client'
+
+import { Center, Stack, VStack } from '@chakra-ui/react'
+import ConfirmContainer from '@/components/ConfirmContainer'
 
 const Home = () => {
   return (
     <Center minH="100vh">
-      <Text size="2xl">Home Page</Text>
+      <Stack>
+        <VStack>
+          <ConfirmContainer />
+        </VStack>
+      </Stack>
     </Center>
   )
 }

@@ -8,69 +8,83 @@ import {
   Button,
   InputGroup,
   InputRightElement,
-  Spinner
+  useToast
 } from '@chakra-ui/react'
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
 import { useState } from 'react'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
+import { useForm } from 'react-hook-form'
+import { setCookie } from 'cookies-next'
 
 const FormLogin = () => {
-  const [storeData, setStoreData] = useState({
-    username: '',
-    password: ''
-  })
+  const {
+    register,
+    handleSubmit,
 
-  const [loading, setLoading] = useState(false)
+    formState: { isSubmitting }
+  } = useForm()
+
+  const toast = useToast()
+
   const [showPassword, setShowPasswrod] = useState(false)
-
-  const handleChange = prop => e => {
-    setStoreData({ ...storeData, [prop]: e.target.value })
-  }
 
   const handleShowPassword = () => setShowPasswrod(!showPassword)
 
   const path = useRouter()
 
-  const handleSubmit = async e => {
-    e.preventDefault()
-
-    setLoading(true)
-
+  const onSubmit = async data => {
     const fd = new FormData()
-    fd.append('username', storeData.username)
-    fd.append('password', storeData.password)
+    fd.append('username', data.username)
+    fd.append('password', data.password)
 
     try {
-      await axios.post('/api/login', fd, {
-        headers: {
-          Accept:
-            'application/json, application/xml, text/plain, text/html, *.*',
-          'Content-Type': 'multipart/form-data'
-        }
-      })
+      await axios
+        .post('/api/login', fd, {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'multipart/form-data'
+          }
+        })
+        .then(data => {
+          toast({
+            status: 'success',
+            description: 'Login berhasil',
+            title: 'Valid Login',
+            position: 'top-right',
+            containerStyle: {
+              marginTop: '30px'
+            }
+          })
+          setCookie('token', data.data.token)
+        })
 
       path.push('/')
     } catch (err) {
-      setLoading(false)
+      toast({
+        status: 'error',
+        description: 'Periksa kembali NPM dan Password anda',
+        title: 'Invalid Login',
+        position: 'top-right',
+        containerStyle: {
+          marginTop: '30px'
+        }
+      })
     }
-
-    setLoading(false)
   }
 
   return (
-    <form method="post" onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <Grid columnGap="4" gap={6}>
         <GridItem>
           <FormControl>
             <Input
+              variant="flushed"
               borderColor="blackAlpha.900"
               placeholder="NPM"
-              variant="flushed"
               focusBorderColor="#06989e"
+              {...register('username')}
               type="text"
-              onChange={handleChange('username')}
-              required
             />
           </FormControl>
         </GridItem>
@@ -81,9 +95,8 @@ const FormLogin = () => {
               borderColor="blackAlpha.900"
               placeholder="Password"
               focusBorderColor="#06989e"
-              onChange={handleChange('password')}
+              {...register('password')}
               type={showPassword ? 'text' : 'password'}
-              required
             />
             <InputRightElement width="4.5rem">
               <Button h="1.78rem" size="md" onClick={handleShowPassword}>
@@ -92,23 +105,14 @@ const FormLogin = () => {
             </InputRightElement>
           </InputGroup>
         </GridItem>
+
         <Button
           type="submit"
           variant="solid"
           colorScheme="teal"
-          disabled={loading}
+          isLoading={isSubmitting}
         >
-          {loading ? (
-            <Spinner
-              thickness="3px"
-              emptyColor="gray"
-              speed="0.90s"
-              color="with"
-              size="md"
-            />
-          ) : (
-            'Login'
-          )}
+          Login
         </Button>
       </Grid>
     </form>

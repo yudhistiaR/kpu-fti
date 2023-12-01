@@ -1,11 +1,15 @@
 import { NextResponse } from 'next/server'
 import axios from 'axios'
-import * as jose from 'jose'
 import { cookies } from 'next/headers'
 
-export async function POST(request) {
-  const storeCookies = cookies()
+import jwt from 'jsonwebtoken'
 
+import { PrismaClient } from '@prisma/client'
+
+const prisma = new PrismaClient()
+
+export async function POST(request) {
+  const setCookies = cookies()
   const req = await request.formData()
   const npm = req.get('username')
   const password = req.get('password')
@@ -26,30 +30,45 @@ export async function POST(request) {
 
     const user = req.data.data
 
+    //userid return NPM
     const { userid, nama, kode_prodi } = user
 
     const prodi =
-      kode_prodi == '57201' ? 'Sistem Informasi' : 'Teknik Information'
+      kode_prodi == '57201' ? 'Sistem Informasi' : 'Teknik Informatika'
 
-    const secret = new TextEncoder().encode(process.env.JWT_SECRET)
-
-    const jwt = await new jose.SignJWT({
-      userid: userid,
-      name: nama,
-      prodi: prodi
-    })
-      .setProtectedHeader({ alg: 'HS256' })
-      .setIssuedAt()
-      .setExpirationTime('30d')
-      .sign(secret)
-
-    storeCookies.set({
-      name: 'accessToken',
-      value: jwt,
-      httpOnly: true
+    const verify = await prisma.pemilih.findFirst({
+      where: {
+        npm: userid
+      }
     })
 
-    return NextResponse.json({ user, token: jwt }, { status: 200 })
+    const token = jwt.sign(
+      {
+        npm: userid,
+        name: nama,
+        prodi: prodi,
+        role: verify?.role === 'Pengurus' ? 'Pengurus' : 'Mahasiswa'
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: '7d' }
+    )
+
+    if (verify) {
+      setCookies.set('vertivication', true)
+    } else {
+      setCookies.set('vertivication', false)
+    }
+
+    return NextResponse.json(
+      {
+        user: {
+          ...user,
+          prodi: prodi
+        },
+        token: token
+      },
+      { status: 200 }
+    )
   } catch (err) {
     return NextResponse.json({ message: err }, { status: 500 })
   }

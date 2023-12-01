@@ -10,6 +10,17 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Type {
+  bem
+  si
+  ti
+}
+
+enum Role {
+      Mahasiswa
+      Pengurus
+  }
+
 model User {
     id String @id @default(uuid())
     npm String @unique
@@ -17,4 +28,36 @@ model User {
     prodi String
     password String
     token String @db.Text
+}
+
+model Pemilih {
+  id String @id @default(uuid())
+  name String
+  npm String
+  prodi String
+  role Role @default(Mahasiswa)
+  status_bem Boolean @default(false)
+  status_hmp Boolean @default(false)
+
+  paslon Transaction[]
+}
+
+model Paslon {
+    id String @id @default(uuid())
+    nama_paslon String
+    no_urut String
+    foto String
+    visi_misi String @db.LongText
+    type Type
+
+    pemilih Transaction[]
+}
+
+model Transaction {
+    paslon_id String
+    pemilih_id String
+    pemilih Pemilih @relation(fields: [pemilih_id],references: [id])
+    paslon Paslon @relation(fields: [paslon_id],references: [id])
+
+    @@id([pemilih_id,paslon_id])
 }
