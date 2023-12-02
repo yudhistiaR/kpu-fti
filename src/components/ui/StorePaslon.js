@@ -25,15 +25,9 @@ import {
 } from '@chakra-ui/react'
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
-import dynamic from 'next/dynamic'
-
-const FroalaEditorView = dynamic(() =>
-  import('react-froala-wysiwyg/FroalaEditorView')
-)
-
 import { TbFilterSearch } from 'react-icons/tb'
 import types from '@/lib/utils/types'
-
+import parse from 'html-react-parser'
 import { fetchPaslon } from '@/hooks/useFetch'
 import { getCookie } from 'cookies-next'
 
@@ -158,9 +152,7 @@ const StorePaslon = () => {
                   </Tr>
                   <Tr>
                     <Td>
-                      <Text fontSize="md">
-                        <FroalaEditorView model={el.visi_misi} />
-                      </Text>
+                      <Text fontSize="md">{parse(el.visi_misi)}</Text>
                     </Td>
                   </Tr>
                 </Tbody>
