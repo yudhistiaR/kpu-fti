@@ -31,16 +31,8 @@ import dynamic from 'next/dynamic'
 import { getCookie } from 'cookies-next'
 
 //editor
-import 'froala-editor/css/froala_style.min.css'
-import 'froala-editor/css/froala_editor.pkgd.min.css'
-import 'froala-editor/js/plugins/lists.min.js'
-import 'froala-editor/js/plugins/fullscreen.min.js'
-import 'froala-editor/js/plugins/font_size.min.js'
-import 'froala-editor/js/plugins/char_counter.min.js'
-import 'froala-editor/js/plugins/align.min.js'
-import 'froala-editor/js/plugins/save.min.js'
-
-const Editor = dynamic(() => import('react-froala-wysiwyg'))
+const ReactQuill = dynamic(() => import('react-quill'))
+import 'react-quill/dist/quill.snow.css'
 
 const FormStorePaslon = () => {
   const token = getCookie('token')
@@ -208,19 +200,10 @@ const FormStorePaslon = () => {
                 </FormControl>
                 <FormControl>
                   <FormLabel>Visi dan Misi</FormLabel>
-                  <Editor
-                    config={{
-                      placeholderText: 'Tulis visi dan misi paslon',
-                      charCounterCount: true,
-                      charCounterMax: 1200,
-                      saveInterval: 1000,
-                      events: {
-                        'save.before': function (html) {
-                          setVisiMisi(html)
-                        }
-                      }
-                    }}
-                    tag="textarea"
+                  <ReactQuill
+                    theme="snow"
+                    value={visiMisi}
+                    onChange={setVisiMisi}
                   />
                 </FormControl>
               </Stack>

@@ -13,12 +13,7 @@ import {
 } from '@chakra-ui/react'
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
-import dynamic from 'next/dynamic'
-
-const FroalaEditorView = dynamic(() =>
-  import('react-froala-wysiwyg/FroalaEditorView')
-)
-
+import parse from 'html-react-parser'
 import { getCookie } from 'cookies-next'
 import { fetchPaslonBem } from '@/hooks/useFetch'
 import VotingAlert from '@/components/alert/VotingAlert'
@@ -64,9 +59,7 @@ const BilikBem = () => {
                     Nama : <i>{data.nama_paslon}</i>
                   </Text>
                 </Box>
-                <Box px={4}>
-                  <FroalaEditorView model={data.visi_misi} />
-                </Box>
+                <Box px={4}>{parse(data.visi_misi)}</Box>
               </CardBody>
               <CardFooter>
                 <VotingAlert paslonId={data.id} type={data.type} />

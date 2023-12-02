@@ -9,14 +9,9 @@ import {
   Text,
   Box
 } from '@chakra-ui/react'
+import parse from 'html-react-parser'
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
-import dynamic from 'next/dynamic'
-
-const FroalaEditorView = dynamic(() =>
-  import('react-froala-wysiwyg/FroalaEditorView')
-)
-
 import { getCookie } from 'cookies-next'
 import { fetchPaslon } from '@/hooks/useFetch'
 import { useDecoded } from '@/hooks/useDecoded'
@@ -68,9 +63,7 @@ const CardPaslon = () => {
                 Nama : <i>{data.nama_paslon}</i>
               </Text>
             </Box>
-            <Box px={4}>
-              <FroalaEditorView model={data.visi_misi} />
-            </Box>
+            <Box px={4}>{parse(data.visi_misi)}</Box>
           </CardBody>
           <CardFooter>
             <VotingAlert paslonId={data.id} type={data.type} />
